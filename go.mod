@@ -4,11 +4,12 @@ go 1.20
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/caarlos0/env/v8 v8.0.0
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/jackc/pgx/v5 v5.3.1
-	github.com/rivo/tview v0.0.0-20230504092913-51ba3688bcdd
+	github.com/rivo/tview v0.0.0-20230511053024-822bd067b165
 	github.com/stretchr/testify v1.8.2
 	golang.design/x/clipboard v0.7.0
 	google.golang.org/grpc v1.55.0
@@ -16,7 +17,6 @@ require (
 )
 
 require (
-	github.com/caarlos0/env/v8 v8.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -34,7 +34,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
-	golang.org/x/exp/shiny v0.0.0-20230425010034-47ecfdc1ba53 // indirect
+	golang.org/x/exp/shiny v0.0.0-20230510235704-dd950f8aeaea // indirect
 	golang.org/x/image v0.7.0 // indirect
 	golang.org/x/mobile v0.0.0-20230427221453-e8d11dd0ba41 // indirect
 	golang.org/x/net v0.10.0 // indirect
