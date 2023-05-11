@@ -22,7 +22,7 @@ func main() {
 	files := storage.NewFileStorage(cfg.FilesDirectory)
 	s := storage.NewStorage(db, files)
 
-	jwtAuth := handlers.NewAuthenticatorJWT(cfg.Auth.SecretJWT, cfg.Auth.ExpirationTime)
+	jwtAuth := handlers.NewAuthenticatorJWT([]byte(cfg.Auth.SecretJWT), cfg.Auth.ExpirationTime)
 	h := handlers.NewServerHandlers(s, jwtAuth)
 	server := handlers.NewServerConn(h)
 

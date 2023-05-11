@@ -14,16 +14,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var dbConnectionURL = config.NewConfigForTests().DBConnectionURL
+
 func TestNewDBStorage(t *testing.T) {
-	cfg := config.NewServerConfig()
 	assert.NotPanics(t, func() {
-		NewDBStorage(cfg.DBConnectionURL)
+		NewDBStorage(dbConnectionURL)
 	})
 }
 
 func TestDBStorage_CreateUser(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
@@ -102,8 +102,7 @@ func TestDBStorage_CreateUser(t *testing.T) {
 }
 
 func TestDBStorage_LoginUser(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
 	storage.DB = db
@@ -175,8 +174,7 @@ func TestDBStorage_LoginUser(t *testing.T) {
 }
 
 func TestDBStorage_GetRecordsInfo(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
 	storage.DB = db
@@ -258,8 +256,7 @@ func TestDBStorage_GetRecordsInfo(t *testing.T) {
 }
 
 func TestDBStorage_CreateRecord(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
 	storage.DB = db
@@ -345,8 +342,7 @@ func TestDBStorage_CreateRecord(t *testing.T) {
 }
 
 func TestDBStorage_GetRecord(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
 	storage.DB = db
@@ -445,8 +441,7 @@ func TestDBStorage_GetRecord(t *testing.T) {
 }
 
 func TestDBStorage_DeleteRecord(t *testing.T) {
-	cfg := config.NewServerConfig()
-	storage := newDBStorage(cfg.DBConnectionURL)
+	storage := newDBStorage(dbConnectionURL)
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	assert.NoError(t, err)
 	storage.DB = db

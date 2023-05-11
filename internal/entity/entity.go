@@ -14,9 +14,8 @@ const (
 
 // UserCredentials struct for user authorization.
 type UserCredentials struct {
-	Login     string
-	Password  string
-	MasterKey []byte
+	Login, Password string
+	MasterKey       []byte
 }
 
 // UserID is unique identificator of user.
@@ -27,10 +26,9 @@ type AuthToken string
 
 // Record is struct for decrypted or encrypted information.
 type Record struct {
-	ID       string
-	Metadata string
-	Type     RecordType
-	Data     []byte
+	ID, Metadata string
+	Type         RecordType
+	Data         []byte
 }
 
 type RecordType int32
@@ -52,8 +50,7 @@ func (r RecordType) String() string {
 
 // LoginAndPassword for encrypted login and password.
 type LoginAndPassword struct {
-	Login    string
-	Password string
+	Login, Password string
 }
 
 // Bytes implementation of Data interface.
@@ -84,14 +81,13 @@ func (data *BinaryFile) Bytes() ([]byte, error) {
 		return nil, err
 	}
 	data.File = file
+
 	return io.ReadAll(data.File)
 }
 
 // CreditCard for encrypted credit card.
 type CreditCard struct {
-	CardNumber     string
-	ExpirationDate string
-	CVCCode        string
+	CardNumber, ExpirationDate, CVCCode string
 }
 
 // Bytes gets bytes of information.

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"flag"
 	"log"
 	"time"
 
@@ -16,35 +15,42 @@ type ServerConfig struct {
 	Auth            AuthConfig
 }
 
+// AuthConfig auth settings.
 type AuthConfig struct {
-	SecretJWT      []byte `env:"SECRET_JWT" envDefault:"HERE_MUST_BE_SECRET_KEY"`
+	SecretJWT      string `env:"SECRET_JWT" envDefault:"HERE_MUST_BE_SECRET_KEY"`
 	ExpirationTime int64
 }
 
 // NewServerConfig gets server config.
 func NewServerConfig() ServerConfig {
 	var (
-		cfg       ServerConfig
-		secretJWT string
+		cfg  ServerConfig
+		auth AuthConfig
 	)
-
-	flag.StringVar(&cfg.RunAddress, "a", "", "server address")
-	flag.StringVar(&cfg.FilesDirectory, "f", "", "file db path")
-	flag.StringVar(&cfg.DBConnectionURL, "d", "", "postgres DSN (url)")
-	flag.StringVar(&secretJWT, "s", "", "secret key for JWT")
 
 	if err := env.Parse(&cfg); err != nil {
 		log.Printf("%+v\n", err)
 	}
-	if err := env.Parse(&secretJWT); err != nil {
+	if err := env.Parse(&auth); err != nil {
 		log.Printf("%+v\n", err)
 	}
-	flag.Parse()
 
 	cfg.Auth = AuthConfig{
-		SecretJWT:      []byte(secretJWT),
+		SecretJWT:      auth.SecretJWT,
 		ExpirationTime: time.Now().Add(1 * time.Hour).Unix(),
 	}
-
 	return cfg
+}
+
+// NewConfigForTests config fot tests.
+func NewConfigForTests() ServerConfig {
+	return ServerConfig{
+		RunAddress:      ":3200",
+		DBConnectionURL: "",
+		FilesDirectory:  "files",
+		Auth: AuthConfig{
+			"HERE_MUST_BE_SECRET_KEY",
+			time.Now().Add(1 * time.Hour).Unix(),
+		},
+	}
 }
