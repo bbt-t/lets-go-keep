@@ -1,0 +1,14 @@
+FROM golang:1.20.4-buster AS builder
+WORKDIR /app
+COPY go.* ./
+RUN go mod download
+COPY *.go ./
+RUN go build -o /lets-go-keep_build cmd/server/main.go
+
+
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+WORKDIR /
+COPY --from=builder /lets-go-keep_build /lets-go-keep_build
+EXPOSE 8080
+ENTRYPOINT ["/lets-go-keep_build"]
