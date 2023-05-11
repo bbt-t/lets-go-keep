@@ -41,15 +41,12 @@ func (c *ClientConnGPRC) Login(credentials entity.UserCredentials) (string, erro
 		Password: credentials.Password,
 	})
 
-	code := status.Code(err)
-
-	if code == codes.Unauthenticated {
+	switch status.Code(err) {
+	case codes.Unauthenticated:
 		return "", storage.ErrWrongCredentials
-	}
-	if code == codes.Internal {
+	case codes.Internal:
 		return "", storage.ErrUnknown
-	}
-	if code == codes.InvalidArgument {
+	case codes.InvalidArgument:
 		return "", controller.ErrFieldIsEmpty
 	}
 

@@ -19,7 +19,7 @@ func GenerateRandom(size int) ([]byte, error) {
 	return b, nil
 }
 
-// PasswordHash encryption.
+// PasswordHash make encryption string.
 func PasswordHash(credentials entity.UserCredentials) string {
 	sha := sha256.New()
 	sha.Write([]byte(credentials.Login + credentials.Password))
