@@ -11,6 +11,8 @@ import (
 	"github.com/bbt-t/lets-go-keep/internal/entity"
 	"github.com/bbt-t/lets-go-keep/internal/storage"
 	"github.com/bbt-t/lets-go-keep/pkg"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // client struct for client handlers.
@@ -36,6 +38,8 @@ func (c *client) Login(credentials entity.UserCredentials) error {
 	}
 	authToken, err := c.conn.Login(credentials)
 	if err != nil {
+		log.Infoln(err)
+
 		return err
 	}
 
@@ -62,6 +66,8 @@ func (c *client) Register(credentials entity.UserCredentials) error {
 	}
 	authToken, err := c.conn.Register(credentials)
 	if err != nil {
+		log.Infoln(err)
+
 		return err
 	}
 
@@ -73,6 +79,8 @@ func (c *client) Register(credentials entity.UserCredentials) error {
 	sha := sha256.New()
 	_, err = sha.Write(c.masterKey)
 	if err != nil {
+		log.Infoln(err)
+
 		return storage.ErrUnknown
 	}
 
@@ -97,16 +105,22 @@ func (c *client) GetRecord(recordID string) (entity.Record, error) {
 
 	record, errGetRecord := c.conn.GetRecord(c.authToken, recordID)
 	if errGetRecord != nil {
+		log.Infoln(errGetRecord)
+
 		return record, errGetRecord
 	}
 
 	aesBlock, errNewCipher := aes.NewCipher(c.masterKey)
 	if errNewCipher != nil {
+		log.Infoln(errNewCipher)
+
 		return record, controller.ErrWrongMasterKey
 	}
 
 	aesGCM, errNewGCM := cipher.NewGCM(aesBlock)
 	if errNewGCM != nil {
+		log.Infoln(errNewGCM)
+
 		return record, storage.ErrUnknown
 	}
 
@@ -114,6 +128,8 @@ func (c *client) GetRecord(recordID string) (entity.Record, error) {
 
 	decoded, err := aesGCM.Open(nil, nonce, record.Data[aesGCM.NonceSize():], nil)
 	if err != nil {
+		log.Infoln(err)
+
 		return record, storage.ErrUnknown
 	}
 
@@ -122,11 +138,15 @@ func (c *client) GetRecord(recordID string) (entity.Record, error) {
 	if record.Type == entity.TypeFile {
 		file, err := os.Create(record.Metadata)
 		if err != nil {
+			log.Infoln(err)
+
 			return record, storage.ErrUnknown
 		}
 
 		_, err = file.Write(record.Data)
 		if err != nil {
+			log.Infoln(err)
+
 			return record, storage.ErrUnknown
 		}
 		record.Data = []byte("Saved file successfully to " + record.Metadata + ".")
@@ -151,16 +171,22 @@ func (c *client) CreateRecord(record entity.Record) error {
 	aesBlock, errNewCipher := aes.NewCipher(c.masterKey)
 
 	if errNewCipher != nil {
+		log.Infoln(errNewCipher)
+
 		return controller.ErrWrongMasterKey
 	}
 
 	aesGCM, errNewGCM := cipher.NewGCM(aesBlock)
 	if errNewGCM != nil {
+		log.Infoln(errNewGCM)
+
 		return storage.ErrUnknown
 	}
 
 	nonce, errGenerateRandom := pkg.GenerateRandom(aesGCM.NonceSize())
 	if errGenerateRandom != nil {
+		log.Infoln(errGenerateRandom)
+
 		return storage.ErrUnknown
 	}
 	// Encryption:

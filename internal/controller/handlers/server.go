@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"context"
-	"log"
 
 	"github.com/bbt-t/lets-go-keep/internal/controller"
 	"github.com/bbt-t/lets-go-keep/internal/entity"
 	"github.com/bbt-t/lets-go-keep/internal/storage"
 	"github.com/bbt-t/lets-go-keep/pkg"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // server struct for server handlers.
@@ -34,12 +35,15 @@ func (s *server) LoginUser(credentials entity.UserCredentials) (entity.AuthToken
 
 	userID, err := s.Storage.LoginUser(credentials)
 	if err != nil {
+		log.Infoln(err)
+
 		return "", err
 	}
 
 	authToken, errCreateToken := s.Authenticator.CreateToken(userID)
 	if errCreateToken != nil {
-		log.Println("Failed create authToken:", err)
+		log.Infoln(err)
+
 		return "", storage.ErrUnknown
 	}
 
@@ -56,6 +60,8 @@ func (s *server) CreateUser(credentials entity.UserCredentials) (entity.AuthToke
 		Login:    credentials.Login,
 		Password: pkg.PasswordHash(credentials),
 	}); err != nil {
+		log.Infoln(err)
+
 		return "", err
 	}
 
@@ -66,6 +72,8 @@ func (s *server) CreateUser(credentials entity.UserCredentials) (entity.AuthToke
 func (s *server) GetRecordsInfo(ctx context.Context) ([]entity.Record, error) {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, err
 	}
 
@@ -76,6 +84,8 @@ func (s *server) GetRecordsInfo(ctx context.Context) ([]entity.Record, error) {
 func (s *server) GetRecord(ctx context.Context, recordID string) (entity.Record, error) {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
+		log.Infoln(err)
+
 		return entity.Record{}, err
 	}
 
@@ -86,6 +96,8 @@ func (s *server) GetRecord(ctx context.Context, recordID string) (entity.Record,
 func (s *server) CreateRecord(ctx context.Context, record entity.Record) error {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
+		log.Infoln(err)
+
 		return err
 	}
 
@@ -97,6 +109,8 @@ func (s *server) CreateRecord(ctx context.Context, record entity.Record) error {
 func (s *server) DeleteRecord(ctx context.Context, recordID string) error {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
+		log.Infoln(err)
+
 		return err
 	}
 
@@ -114,6 +128,8 @@ func (s *server) userValidate(ctx context.Context) (entity.UserID, error) {
 
 	userIDValid, err := s.Authenticator.ValidateToken(token)
 	if err != nil {
+		log.Infoln(err)
+
 		return userID, err
 	}
 	return userIDValid, nil

@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 
 	"github.com/bbt-t/lets-go-keep/internal/entity"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // GenerateRandom generates random bytes for encrypting.
@@ -13,6 +15,8 @@ func GenerateRandom(size int) ([]byte, error) {
 	b := make([]byte, size)
 	_, err := rand.Read(b)
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, err
 	}
 

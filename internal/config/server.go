@@ -1,10 +1,10 @@
 package config
 
 import (
-	"log"
 	"time"
 
 	"github.com/caarlos0/env/v8"
+	log "github.com/sirupsen/logrus"
 )
 
 // ServerConfig struct for server config.
@@ -39,6 +39,8 @@ func NewServerConfig() ServerConfig {
 		SecretJWT:      auth.SecretJWT,
 		ExpirationTime: time.Now().Add(1 * time.Hour).Unix(),
 	}
+	log.Infoln("Config loaded")
+
 	return cfg
 }
 

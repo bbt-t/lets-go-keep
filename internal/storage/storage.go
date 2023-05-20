@@ -5,6 +5,8 @@ import (
 	"errors"
 
 	"github.com/bbt-t/lets-go-keep/internal/entity"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Storage struct which saves to DB and file storage.
@@ -46,6 +48,8 @@ func (s *Storage) CreateRecord(ctx context.Context, record entity.Record) (strin
 
 	id, err := s.DBStorage.CreateRecord(ctx, record)
 	if err != nil {
+		log.Infoln(err)
+
 		return "", err
 	}
 
@@ -63,6 +67,8 @@ func (s *Storage) CreateRecord(ctx context.Context, record entity.Record) (strin
 func (s *Storage) DeleteRecord(ctx context.Context, recordID string) error {
 	err := s.DBStorage.DeleteRecord(ctx, recordID)
 	if err != nil {
+		log.Infoln(err)
+
 		return err
 	}
 
@@ -78,6 +84,8 @@ func (s *Storage) DeleteRecord(ctx context.Context, recordID string) error {
 func (s *Storage) GetRecord(ctx context.Context, recordID string) (entity.Record, error) {
 	record, err := s.DBStorage.GetRecord(ctx, recordID)
 	if err != nil {
+		log.Infoln(err)
+
 		return record, err
 	}
 

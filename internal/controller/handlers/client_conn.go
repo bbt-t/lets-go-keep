@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"context"
-	"log"
 
 	"github.com/bbt-t/lets-go-keep/internal/controller"
 	"github.com/bbt-t/lets-go-keep/internal/entity"
 	"github.com/bbt-t/lets-go-keep/internal/storage"
 	pb "github.com/bbt-t/lets-go-keep/protocols/grpc"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -51,6 +51,8 @@ func (c *ClientConnGPRC) Login(credentials entity.UserCredentials) (string, erro
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return "", err
 	}
 

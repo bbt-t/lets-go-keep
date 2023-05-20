@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"log"
 	"net"
 
 	"github.com/bbt-t/lets-go-keep/internal/controller"
@@ -11,6 +10,7 @@ import (
 	"github.com/bbt-t/lets-go-keep/internal/storage"
 	pb "github.com/bbt-t/lets-go-keep/protocols/grpc"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -65,14 +65,20 @@ func (s *ServerConn) Register(_ context.Context, credentials *pb.UserCredentials
 	})
 
 	if errors.Is(err, controller.ErrFieldIsEmpty) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.InvalidArgument, "Login or password is empty.")
 	}
 
 	if errors.Is(err, storage.ErrLoginExists) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.AlreadyExists, "Login already exists.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
 
@@ -87,14 +93,20 @@ func (s *ServerConn) Login(_ context.Context, credentials *pb.UserCredentials) (
 	})
 
 	if errors.Is(err, controller.ErrFieldIsEmpty) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.InvalidArgument, "Login or password is empty.")
 	}
 
 	if errors.Is(err, storage.ErrWrongCredentials) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Unauthenticated, "Wrong login or password.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
 
@@ -114,10 +126,14 @@ func (s *ServerConn) GetRecordsInfo(ctx context.Context, _ *emptypb.Empty) (*pb.
 	records, err := s.Handlers.GetRecordsInfo(ctx)
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
 
@@ -147,14 +163,20 @@ func (s *ServerConn) GetRecord(ctx context.Context, recordID *pb.RecordID) (*pb.
 	record, err := s.Handlers.GetRecord(ctx, recordID.Id)
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
 	if errors.Is(err, storage.ErrNotFound) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.NotFound, "Not found record with such id.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
 
@@ -183,10 +205,14 @@ func (s *ServerConn) CreateRecord(ctx context.Context, record *pb.Record) (*empt
 	})
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(err)
+
 		return &emptypb.Empty{}, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Internal server error.")
 	}
 
@@ -206,14 +232,20 @@ func (s *ServerConn) DeleteRecord(ctx context.Context, recordID *pb.RecordID) (*
 	err := s.Handlers.DeleteRecord(ctx, recordID.Id)
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(err)
+
 		return &emptypb.Empty{}, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
 	if errors.Is(err, storage.ErrNotFound) {
+		log.Infoln(err)
+
 		return nil, status.Errorf(codes.NotFound, "Not found record with such id.")
 	}
 
 	if err != nil {
+		log.Infoln(err)
+
 		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Internal server error.")
 	}
 

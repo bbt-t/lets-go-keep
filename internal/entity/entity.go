@@ -3,6 +3,8 @@ package entity
 import (
 	"io"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -78,6 +80,8 @@ type BinaryFile struct {
 func (data *BinaryFile) Bytes() ([]byte, error) {
 	file, err := os.Open(data.FilePath)
 	if err != nil {
+		log.Infoln(err)
+
 		return nil, err
 	}
 	data.File = file

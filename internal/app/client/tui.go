@@ -2,7 +2,6 @@ package client
 
 import (
 	"errors"
-	"log"
 	"path"
 	"regexp"
 
@@ -13,6 +12,7 @@ import (
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
+	log "github.com/sirupsen/logrus"
 	"golang.design/x/clipboard"
 )
 
@@ -62,14 +62,20 @@ func (app *TUI) authPage(message string) {
 		err := app.client.Login(credentials)
 
 		if errors.Is(err, storage.ErrWrongCredentials) {
+			log.Infoln(storage.ErrWrongCredentials)
+
 			app.authPage("Wrong credentials. Please try again.")
 			return
 		}
 		if errors.Is(err, controller.ErrFieldIsEmpty) {
+			log.Infoln(controller.ErrFieldIsEmpty)
+
 			app.authPage("Some fields are empty.")
 			return
 		}
 		if errors.Is(err, storage.ErrUnknown) || err != nil {
+			log.Infoln(storage.ErrUnknown)
+
 			app.authPage("Something is wrong. Please try again later.")
 			return
 		}
@@ -81,14 +87,20 @@ func (app *TUI) authPage(message string) {
 		err := app.client.Register(credentials)
 
 		if errors.Is(err, storage.ErrLoginExists) {
+			log.Infoln(storage.ErrLoginExists)
+
 			app.authPage("Such login exists. Please try again.")
 			return
 		}
 		if errors.Is(err, controller.ErrFieldIsEmpty) {
+			log.Infoln(controller.ErrFieldIsEmpty)
+
 			app.authPage("Some fields are empty.")
 			return
 		}
 		if errors.Is(err, storage.ErrUnknown) || err != nil {
+			log.Infoln(storage.ErrUnknown)
+
 			app.authPage("Something is wrong. Please try again later.")
 			return
 		}
@@ -119,10 +131,14 @@ func (app *TUI) recordsInfoPage(message string) {
 	records, err := app.client.GetRecordsInfo()
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(storage.ErrUnauthenticated)
+
 		app.authPage("Session expired. Please login again.")
 		return
 	}
 	if errors.Is(err, storage.ErrUnknown) || err != nil {
+		log.Infoln(storage.ErrUnknown)
+
 		message = "Something is wrong. Please try later."
 		return
 	}
@@ -182,15 +198,21 @@ func (app *TUI) recordPage(recordID string, message string) {
 	record, err := app.client.GetRecord(recordID)
 
 	if errors.Is(err, storage.ErrUnauthenticated) {
+		log.Infoln(storage.ErrUnauthenticated)
+
 		app.authPage("Session expired. Please login again.")
 		return
 	}
 	if errors.Is(err, storage.ErrNotFound) {
+		log.Infoln(storage.ErrNotFound)
+
 		app.recordsInfoPage("Not found this record.")
 		return
 	}
 
 	if err != nil {
+		log.Infoln("Failed get record.")
+
 		app.recordsInfoPage("Failed get record.")
 		return
 	}
@@ -235,18 +257,26 @@ func (app *TUI) recordPage(recordID string, message string) {
 			err := app.client.DeleteRecord(recordID)
 
 			if errors.Is(err, storage.ErrUnauthenticated) {
+				log.Infoln(storage.ErrUnauthenticated)
+
 				app.authPage("Session expired. Please login again.")
 				return event
 			}
 			if errors.Is(err, controller.ErrWrongMasterKey) {
+				log.Infoln(controller.ErrWrongMasterKey)
+
 				app.authPage("Wrong master key. Please login again.")
 				return event
 			}
 			if errors.Is(err, storage.ErrNotFound) {
+				log.Infoln(storage.ErrNotFound)
+
 				app.recordsInfoPage("Failed to delete. Not found record.")
 				return event
 			}
 			if errors.Is(err, storage.ErrUnknown) || err != nil {
+				log.Infoln(storage.ErrUnknown)
+
 				app.recordPage(recordID, "Something is wrong. Please try later.")
 				return event
 			}
@@ -276,10 +306,14 @@ func (app *TUI) createTextRecord() {
 		err := app.client.CreateRecord(record)
 
 		if errors.Is(err, storage.ErrUnauthenticated) {
+			log.Infoln(storage.ErrUnauthenticated)
+
 			app.authPage("Session expired. Please login again.")
 			return
 		}
 		if errors.Is(err, storage.ErrUnknown) {
+			log.Infoln(storage.ErrUnknown)
+
 			app.recordsInfoPage("Something is wrong. Please try later.")
 			return
 		}

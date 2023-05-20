@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"io"
-	"log"
 	"os"
 
 	"github.com/bbt-t/lets-go-keep/internal/entity"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // fileStorage keeps records on disk.
@@ -19,6 +20,7 @@ type fileStorage struct {
 func newFileStorage(directory string) *fileStorage {
 	if err := os.Mkdir(directory, os.ModePerm); err != nil && !os.IsExist(err) {
 		log.Fatalln("Failed open directory for file storage")
+
 		return nil
 	}
 
@@ -35,14 +37,20 @@ func (storage *fileStorage) GetRecord(ctx context.Context, recordID string) (ent
 
 	file, err := os.Open(storage.directory + "/" + recordID)
 	if errors.Is(err, os.ErrNotExist) {
+		log.Infoln(err)
+
 		return entity.Record{}, ErrNotFound
 	}
 	if err != nil {
+		log.Infoln(err)
+
 		return entity.Record{}, ErrUnknown
 	}
 
 	data, errReadAll := io.ReadAll(file)
 	if errReadAll != nil {
+		log.Infoln(err)
+
 		return entity.Record{}, ErrUnknown
 	}
 
@@ -62,6 +70,8 @@ func (storage *fileStorage) DeleteRecord(_ context.Context, recordID string) err
 	}
 
 	if err := os.RemoveAll(filename); err != nil {
+		log.Infoln(err)
+
 		return ErrUnknown
 	}
 
@@ -72,6 +82,8 @@ func (storage *fileStorage) DeleteRecord(_ context.Context, recordID string) err
 func (storage *fileStorage) CreateRecord(_ context.Context, record entity.Record) (string, error) {
 	file, err := os.Create(storage.directory + "/" + record.ID)
 	if err != nil {
+		log.Infoln(err)
+
 		return "", ErrUnknown
 	}
 

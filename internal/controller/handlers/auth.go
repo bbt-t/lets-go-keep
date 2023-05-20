@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/bbt-t/lets-go-keep/internal/entity"
 	"github.com/bbt-t/lets-go-keep/internal/storage"
 
 	"github.com/golang-jwt/jwt/v5"
+	log "github.com/sirupsen/logrus"
 )
 
 // authenticatorJWT is authenticator which uses JWT.
@@ -33,6 +32,7 @@ func (a *authenticatorJWT) CreateToken(userID entity.UserID) (entity.AuthToken, 
 	tokenString, err := token.SignedString(a.secretKey)
 	if err != nil {
 		log.Println("Failed generate token for authentication:", err)
+
 		return "", storage.ErrUnknown
 	}
 
@@ -51,6 +51,8 @@ func (a *authenticatorJWT) ValidateToken(token entity.AuthToken) (entity.UserID,
 	})
 
 	if err != nil {
+		log.Warning(storage.ErrUnauthenticated)
+
 		return "", storage.ErrUnauthenticated
 	}
 

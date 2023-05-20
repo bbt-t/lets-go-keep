@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/bbt-t/lets-go-keep/internal/entity"
@@ -13,6 +12,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	log "github.com/sirupsen/logrus"
 )
 
 // dbStorage for db storage.
@@ -25,6 +25,7 @@ func newDBStorage(connectionURL string) *dbStorage {
 	db, err := sql.Open("pgx", connectionURL)
 	if err != nil {
 		log.Fatalln("Failed open DB storage:", err)
+
 		return nil
 	}
 
@@ -45,11 +46,13 @@ func (s *dbStorage) MigrateUP() {
 		"pgx", driver)
 	if errMigrate != nil {
 		log.Fatalf("Failed create migration instance: %v\n", err)
+
 		return
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatalln("Failed migrate: ", err)
+
 		return
 	}
 }
@@ -69,7 +72,8 @@ func (s *dbStorage) CreateUser(credentials entity.UserCredentials) error {
 	err := row.Scan(&sameLoginCounter)
 
 	if err != nil || row.Err() != nil {
-		log.Println("Failed get row while checking for login conflict:", err)
+		log.Infoln(err)
+
 		return ErrUnknown
 	}
 
@@ -84,7 +88,8 @@ func (s *dbStorage) CreateUser(credentials entity.UserCredentials) error {
 		credentials.Password,
 	)
 	if err != nil {
-		log.Println("Failed insert new user into table users:", err)
+		log.Infoln(err)
+
 		return ErrUnknown
 	}
 
@@ -107,11 +112,14 @@ func (s *dbStorage) LoginUser(credentials entity.UserCredentials) (entity.UserID
 
 	err := row.Scan(&userID)
 	if errors.Is(err, sql.ErrNoRows) {
+		log.Infoln(err)
+
 		return userID, ErrWrongCredentials
 	}
 
 	if err != nil || row.Err() != nil {
-		log.Println("Failed get row while checking for correct user credentials:", err)
+		log.Infoln(err)
+
 		return userID, ErrUnknown
 	}
 
@@ -132,7 +140,8 @@ func (s *dbStorage) GetRecordsInfo(ctx context.Context) ([]entity.Record, error)
 		userID,
 	)
 	if err != nil {
-		log.Println("Failed get rows in getting all records:", err)
+		log.Infoln(err)
+
 		return nil, ErrUnknown
 	}
 
@@ -143,7 +152,8 @@ func (s *dbStorage) GetRecordsInfo(ctx context.Context) ([]entity.Record, error)
 	var row entity.Record
 	for rows.Next() {
 		if err := rows.Scan(&row.ID, &row.Type, &row.Metadata); err != nil {
-			log.Println("Failed get next row in getting all records:", err)
+			log.Infoln(err)
+
 			return nil, ErrUnknown
 		}
 
@@ -179,6 +189,8 @@ func (s *dbStorage) CreateRecord(ctx context.Context, record entity.Record) (str
 
 	var recordID string
 	if err := row.Scan(&recordID); err != nil || row.Err() != nil {
+		log.Infoln(err)
+
 		return "", ErrUnknown
 	}
 
@@ -206,16 +218,20 @@ func (s *dbStorage) GetRecord(ctx context.Context, recordID string) (entity.Reco
 	err := row.Scan(&record.ID, &record.Type, &record.Metadata, &hexDataString)
 
 	if errors.Is(err, sql.ErrNoRows) {
+		log.Infoln(err)
+
 		return record, ErrNotFound
 	}
 	if err != nil || row.Err() != nil {
-		log.Println("Failed scan rows to find needed record.", err)
+		log.Infoln(err)
+
 		return record, ErrUnknown
 	}
 
 	record.Data, err = hex.DecodeString(hexDataString)
 	if err != nil {
-		log.Println("Failed convert record data from hex to bytes:", err)
+		log.Infoln(err)
+
 		return record, ErrUnknown
 	}
 
@@ -237,7 +253,8 @@ func (s *dbStorage) DeleteRecord(ctx context.Context, recordID string) error {
 		userID,
 	)
 	if err != nil {
-		log.Println("Failed delete record:", err)
+		log.Infoln(err)
+
 		return ErrUnknown
 	}
 
