@@ -189,7 +189,7 @@ func TestDBStorage_GetRecordsInfo(t *testing.T) {
 			func() {},
 			func() {
 				records, err := storage.GetRecordsInfo(context.Background())
-				assert.Equal(t, ErrUserUnauthorized, err)
+				assert.Equal(t, ErrUnauthenticated, err)
 				assert.Empty(t, records)
 				assert.NoError(t, mock.ExpectationsWereMet())
 			},
@@ -271,7 +271,7 @@ func TestDBStorage_CreateRecord(t *testing.T) {
 			func() {},
 			func() {
 				recordID, err := storage.CreateRecord(context.Background(), entity.Record{})
-				assert.Equal(t, ErrUserUnauthorized, err)
+				assert.Equal(t, ErrUnauthenticated, err)
 				assert.Empty(t, recordID)
 				assert.NoError(t, mock.ExpectationsWereMet())
 			},
@@ -357,7 +357,7 @@ func TestDBStorage_GetRecord(t *testing.T) {
 			func() {},
 			func() {
 				record, err := storage.GetRecord(context.Background(), "1")
-				assert.Equal(t, ErrUserUnauthorized, err)
+				assert.Equal(t, ErrUnauthenticated, err)
 				assert.Empty(t, record)
 				assert.NoError(t, mock.ExpectationsWereMet())
 			},
@@ -456,7 +456,7 @@ func TestDBStorage_DeleteRecord(t *testing.T) {
 			func() {},
 			func() {
 				err := storage.DeleteRecord(context.Background(), "1")
-				assert.Equal(t, ErrUserUnauthorized, err)
+				assert.Equal(t, ErrUnauthenticated, err)
 				assert.NoError(t, mock.ExpectationsWereMet())
 			},
 		},

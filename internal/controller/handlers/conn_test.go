@@ -190,11 +190,11 @@ func TestGetRecordsInfo(t *testing.T) {
 			"Get all records, but server will return error",
 			func() {
 				handlers.On("GetRecordsInfo", mock.AnythingOfType("*context.valueCtx")).
-					Return([]entity.Record{}, storage.ErrUserUnauthorized).Once()
+					Return([]entity.Record{}, storage.ErrUnauthenticated).Once()
 			},
 			func() {
 				_, err := client.GetRecordsInfo("token")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 		{
@@ -246,11 +246,11 @@ func TestGetRecord(t *testing.T) {
 			"Get record, but not authenticated.",
 			func() {
 				handlers.On("GetRecord", mock.AnythingOfType("*context.valueCtx"), "recordID").
-					Return(entity.Record{}, storage.ErrUserUnauthorized).Once()
+					Return(entity.Record{}, storage.ErrUnauthenticated).Once()
 			},
 			func() {
 				_, err := client.GetRecord("token", "recordID")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 		{
@@ -319,11 +319,11 @@ func TestCreateRecord(t *testing.T) {
 					"CreateRecord",
 					mock.AnythingOfType("*context.valueCtx"),
 					entity.Record{},
-				).Return(storage.ErrUserUnauthorized).Once()
+				).Return(storage.ErrUnauthenticated).Once()
 			},
 			func() {
 				err := client.CreateRecord("token", entity.Record{})
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 		{
@@ -384,11 +384,11 @@ func TestDeleteRecord(t *testing.T) {
 					"DeleteRecord",
 					mock.AnythingOfType("*context.valueCtx"),
 					"recordID",
-				).Return(storage.ErrUserUnauthorized).Once()
+				).Return(storage.ErrUnauthenticated).Once()
 			},
 			func() {
 				err := client.DeleteRecord("token", "recordID")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 		{

@@ -109,7 +109,7 @@ func (s *server) userValidate(ctx context.Context) (entity.UserID, error) {
 
 	token, ok := ctx.Value("authToken").(entity.AuthToken)
 	if !ok {
-		return userID, storage.ErrUserUnauthorized
+		return userID, storage.ErrUnauthenticated
 	}
 
 	userIDValid, err := s.Authenticator.ValidateToken(token)

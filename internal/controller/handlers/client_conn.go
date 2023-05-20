@@ -88,7 +88,7 @@ func (c *ClientConnGPRC) GetRecordsInfo(token entity.AuthToken) ([]entity.Record
 	case codes.Internal:
 		return nil, storage.ErrUnknown
 	case codes.Unauthenticated:
-		return nil, storage.ErrUserUnauthorized
+		return nil, storage.ErrUnauthenticated
 	}
 
 	records := make([]entity.Record, 0, len(gotRecords.Records))
@@ -116,7 +116,7 @@ func (c *ClientConnGPRC) GetRecord(token entity.AuthToken, recordID string) (ent
 	case codes.Internal:
 		return record, storage.ErrUnknown
 	case codes.Unauthenticated:
-		return record, storage.ErrUserUnauthorized
+		return record, storage.ErrUnauthenticated
 	case codes.NotFound:
 		return record, storage.ErrNotFound
 	}
@@ -142,7 +142,7 @@ func (c *ClientConnGPRC) DeleteRecord(token entity.AuthToken, recordID string) e
 	case codes.Internal:
 		return storage.ErrUnknown
 	case codes.Unauthenticated:
-		return storage.ErrUserUnauthorized
+		return storage.ErrUnauthenticated
 	case codes.NotFound:
 		return storage.ErrNotFound
 	}
@@ -163,7 +163,7 @@ func (c *ClientConnGPRC) CreateRecord(token entity.AuthToken, record entity.Reco
 	case codes.Internal:
 		return storage.ErrUnknown
 	case codes.Unauthenticated:
-		return storage.ErrUserUnauthorized
+		return storage.ErrUnauthenticated
 	}
 
 	return nil

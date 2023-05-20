@@ -123,7 +123,7 @@ func (s *dbStorage) GetRecordsInfo(ctx context.Context) ([]entity.Record, error)
 	userID, ok := ctx.Value("userID").(entity.UserID)
 	if !ok {
 		log.Println("Failed get userID from context in getting all records")
-		return nil, ErrUserUnauthorized
+		return nil, ErrUnauthenticated
 	}
 
 	rows, err := s.DB.QueryContext(
@@ -163,7 +163,7 @@ func (s *dbStorage) CreateRecord(ctx context.Context, record entity.Record) (str
 	userID, ok := ctx.Value("userID").(entity.UserID)
 	if !ok {
 		log.Println("Failed get userID from context in getting all records")
-		return "", ErrUserUnauthorized
+		return "", ErrUnauthenticated
 	}
 
 	hexDataString := hex.EncodeToString(record.Data)
@@ -192,7 +192,7 @@ func (s *dbStorage) GetRecord(ctx context.Context, recordID string) (entity.Reco
 	userID, ok := ctx.Value("userID").(entity.UserID)
 	if !ok {
 		log.Println("Failed get userID from context in getting all records")
-		return record, ErrUserUnauthorized
+		return record, ErrUnauthenticated
 	}
 
 	row := s.DB.QueryRowContext(
@@ -227,7 +227,7 @@ func (s *dbStorage) DeleteRecord(ctx context.Context, recordID string) error {
 	userID, ok := ctx.Value("userID").(entity.UserID)
 	if !ok {
 		log.Println("Failed get userID from context in getting all records")
-		return ErrUserUnauthorized
+		return ErrUnauthenticated
 	}
 
 	result, err := s.DB.ExecContext(

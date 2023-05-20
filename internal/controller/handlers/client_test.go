@@ -174,12 +174,12 @@ func TestClient_GetRecordsInfo(t *testing.T) {
 				conn.On(
 					"GetRecordsInfo",
 					entity.AuthToken("token")).Return([]entity.Record{},
-					storage.ErrUserUnauthorized,
+					storage.ErrUnauthenticated,
 				).Once()
 			},
 			func() {
 				records, err := handlers.GetRecordsInfo()
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 				assert.Equal(t, []entity.Record{}, records)
 			},
 		},
@@ -348,13 +348,13 @@ func TestClient_CreateRecord(t *testing.T) {
 					"CreateRecord",
 					entity.AuthToken("token"),
 					mock.AnythingOfType("entity.Record"),
-				).Return(storage.ErrUserUnauthorized).Once()
+				).Return(storage.ErrUnauthenticated).Once()
 			},
 			func() {
 				err := handlers.CreateRecord(entity.Record{
 					Data: []byte("hello!"),
 				})
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 		{

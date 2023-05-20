@@ -148,7 +148,7 @@ func TestServer_GetRecordsInfo(t *testing.T) {
 			func() {
 				ctx := context.Background()
 				_, err := handlers.GetRecordsInfo(ctx)
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 	}
@@ -191,7 +191,7 @@ func TestServer_GetRecord(t *testing.T) {
 			func() {
 				ctx := context.Background()
 				_, err := handlers.GetRecord(ctx, "recordID")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 	}
@@ -234,7 +234,7 @@ func TestServer_CreateRecord(t *testing.T) {
 			func() {
 				ctx := context.Background()
 				_, err := handlers.GetRecord(ctx, "recordID")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 	}
@@ -277,7 +277,7 @@ func TestServer_DeleteRecord(t *testing.T) {
 			func() {
 				ctx := context.Background()
 				err := handlers.DeleteRecord(ctx, "recordID")
-				assert.Equal(t, storage.ErrUserUnauthorized, err)
+				assert.Equal(t, storage.ErrUnauthenticated, err)
 			},
 		},
 	}

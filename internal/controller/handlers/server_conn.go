@@ -113,7 +113,7 @@ func (s *ServerConn) GetRecordsInfo(ctx context.Context, _ *emptypb.Empty) (*pb.
 
 	records, err := s.Handlers.GetRecordsInfo(ctx)
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		return nil, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
@@ -146,7 +146,7 @@ func (s *ServerConn) GetRecord(ctx context.Context, recordID *pb.RecordID) (*pb.
 
 	record, err := s.Handlers.GetRecord(ctx, recordID.Id)
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		return nil, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
@@ -182,7 +182,7 @@ func (s *ServerConn) CreateRecord(ctx context.Context, record *pb.Record) (*empt
 		Data:     record.StoredData,
 	})
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		return &emptypb.Empty{}, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 
@@ -205,7 +205,7 @@ func (s *ServerConn) DeleteRecord(ctx context.Context, recordID *pb.RecordID) (*
 
 	err := s.Handlers.DeleteRecord(ctx, recordID.Id)
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		return &emptypb.Empty{}, status.Errorf(codes.Unauthenticated, "Bad authentication token.")
 	}
 

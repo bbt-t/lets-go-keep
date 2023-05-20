@@ -51,12 +51,12 @@ func (a *authenticatorJWT) ValidateToken(token entity.AuthToken) (entity.UserID,
 	})
 
 	if err != nil {
-		return "", storage.ErrUserUnauthorized
+		return "", storage.ErrUnauthenticated
 	}
 
 	userID, ok := claims["userID"].(string)
 	if !ok {
-		return "", storage.ErrUserUnauthorized
+		return "", storage.ErrUnauthenticated
 	}
 
 	return entity.UserID(userID), nil

@@ -118,7 +118,7 @@ func (app *TUI) authPage(message string) {
 func (app *TUI) recordsInfoPage(message string) {
 	records, err := app.client.GetRecordsInfo()
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		app.authPage("Session expired. Please login again.")
 		return
 	}
@@ -181,7 +181,7 @@ func (app *TUI) recordsInfoPage(message string) {
 func (app *TUI) recordPage(recordID string, message string) {
 	record, err := app.client.GetRecord(recordID)
 
-	if errors.Is(err, storage.ErrUserUnauthorized) {
+	if errors.Is(err, storage.ErrUnauthenticated) {
 		app.authPage("Session expired. Please login again.")
 		return
 	}
@@ -234,7 +234,7 @@ func (app *TUI) recordPage(recordID string, message string) {
 		case tcell.KeyCtrlU:
 			err := app.client.DeleteRecord(recordID)
 
-			if errors.Is(err, storage.ErrUserUnauthorized) {
+			if errors.Is(err, storage.ErrUnauthenticated) {
 				app.authPage("Session expired. Please login again.")
 				return event
 			}
@@ -275,7 +275,7 @@ func (app *TUI) createTextRecord() {
 	form.AddButton("OK", func() {
 		err := app.client.CreateRecord(record)
 
-		if errors.Is(err, storage.ErrUserUnauthorized) {
+		if errors.Is(err, storage.ErrUnauthenticated) {
 			app.authPage("Session expired. Please login again.")
 			return
 		}
@@ -331,7 +331,7 @@ func (app *TUI) createCredentialsRecord() {
 		record.Data, _ = loginAndPassword.Bytes()
 		err := app.client.CreateRecord(record)
 
-		if errors.Is(err, storage.ErrUserUnauthorized) {
+		if errors.Is(err, storage.ErrUnauthenticated) {
 			app.authPage("Session expired. Please login again.")
 			return
 		}
@@ -421,7 +421,7 @@ func (app *TUI) createCardRecord() {
 		record.Data, _ = creditCard.Bytes()
 		err = app.client.CreateRecord(record)
 
-		if errors.Is(err, storage.ErrUserUnauthorized) {
+		if errors.Is(err, storage.ErrUnauthenticated) {
 			app.authPage("Session expired. Please login again.")
 			return
 		}
@@ -485,7 +485,7 @@ func (app *TUI) createFileRecord() {
 		record.Data = data
 		err = app.client.CreateRecord(record)
 
-		if errors.Is(err, storage.ErrUserUnauthorized) {
+		if errors.Is(err, storage.ErrUnauthenticated) {
 			app.authPage("Session expired. Please login again.")
 			return
 		}
