@@ -35,14 +35,14 @@ func (s *server) LoginUser(credentials entity.UserCredentials) (entity.AuthToken
 
 	userID, err := s.Storage.LoginUser(credentials)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "get user login fault", err)
 
 		return "", err
 	}
 
 	authToken, errCreateToken := s.Authenticator.CreateToken(userID)
 	if errCreateToken != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "create token fault", err)
 
 		return "", storage.ErrUnknown
 	}
@@ -60,7 +60,7 @@ func (s *server) CreateUser(credentials entity.UserCredentials) (entity.AuthToke
 		Login:    credentials.Login,
 		Password: pkg.PasswordHash(credentials),
 	}); err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "create new user fault", err)
 
 		return "", err
 	}
@@ -72,7 +72,7 @@ func (s *server) CreateUser(credentials entity.UserCredentials) (entity.AuthToke
 func (s *server) GetRecordsInfo(ctx context.Context) ([]entity.Record, error) {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "validate user fault", err)
 
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (s *server) GetRecordsInfo(ctx context.Context) ([]entity.Record, error) {
 func (s *server) GetRecord(ctx context.Context, recordID string) (entity.Record, error) {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "validate user fault", err)
 
 		return entity.Record{}, err
 	}
@@ -96,7 +96,7 @@ func (s *server) GetRecord(ctx context.Context, recordID string) (entity.Record,
 func (s *server) CreateRecord(ctx context.Context, record entity.Record) error {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "validate user fault", err)
 
 		return err
 	}
@@ -109,7 +109,7 @@ func (s *server) CreateRecord(ctx context.Context, record entity.Record) error {
 func (s *server) DeleteRecord(ctx context.Context, recordID string) error {
 	userID, err := s.userValidate(ctx)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "validate user fault", err)
 
 		return err
 	}
@@ -128,7 +128,7 @@ func (s *server) userValidate(ctx context.Context) (entity.UserID, error) {
 
 	userIDValid, err := s.Authenticator.ValidateToken(token)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "validate token fault", err)
 
 		return userID, err
 	}

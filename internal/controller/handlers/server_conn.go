@@ -77,7 +77,7 @@ func (s *ServerConn) Register(_ context.Context, credentials *pb.UserCredentials
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s %s :: %v", "register new user fault", credentials.Login, err)
 
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
@@ -105,7 +105,7 @@ func (s *ServerConn) Login(_ context.Context, credentials *pb.UserCredentials) (
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s %s :: %v", "login fault", credentials.Login, err)
 
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
@@ -132,7 +132,7 @@ func (s *ServerConn) GetRecordsInfo(ctx context.Context, _ *emptypb.Empty) (*pb.
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "get record info fault", err)
 
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
@@ -175,7 +175,7 @@ func (s *ServerConn) GetRecord(ctx context.Context, recordID *pb.RecordID) (*pb.
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "get record fault", err)
 
 		return nil, status.Errorf(codes.Internal, "Internal server error.")
 	}
@@ -211,7 +211,7 @@ func (s *ServerConn) CreateRecord(ctx context.Context, record *pb.Record) (*empt
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "create record fault", err)
 
 		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Internal server error.")
 	}
@@ -244,7 +244,7 @@ func (s *ServerConn) DeleteRecord(ctx context.Context, recordID *pb.RecordID) (*
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "delete record fault", err)
 
 		return &emptypb.Empty{}, status.Errorf(codes.Internal, "Internal server error.")
 	}

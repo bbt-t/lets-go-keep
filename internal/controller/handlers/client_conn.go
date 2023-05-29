@@ -51,7 +51,7 @@ func (c *ClientConnGPRC) Login(credentials entity.UserCredentials) (string, erro
 	}
 
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "login fault", err)
 
 		return "", err
 	}

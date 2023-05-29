@@ -41,7 +41,6 @@ message RecordsList {
 service Gophkeeper {
   rpc Register(UserCredentials) returns (Session);
   rpc Login(UserCredentials) returns (Session);
-
   rpc GetRecordsInfo(google.protobuf.Empty) returns (RecordsList);
   rpc GetRecord(RecordID) returns (Record);
   rpc CreateRecord(Record) returns (google.protobuf.Empty);

@@ -38,7 +38,7 @@ func (c *client) Login(credentials entity.UserCredentials) error {
 	}
 	authToken, err := c.conn.Login(credentials)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "auth token fault", err)
 
 		return err
 	}
@@ -66,7 +66,7 @@ func (c *client) Register(credentials entity.UserCredentials) error {
 	}
 	authToken, err := c.conn.Register(credentials)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "register fault", err)
 
 		return err
 	}
@@ -79,7 +79,7 @@ func (c *client) Register(credentials entity.UserCredentials) error {
 	sha := sha256.New()
 	_, err = sha.Write(c.masterKey)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "write master key (sha) fault", err)
 
 		return storage.ErrUnknown
 	}
@@ -128,7 +128,7 @@ func (c *client) GetRecord(recordID string) (entity.Record, error) {
 
 	decoded, err := aesGCM.Open(nil, nonce, record.Data[aesGCM.NonceSize():], nil)
 	if err != nil {
-		log.Infoln(err)
+		log.Warnf("%s :: %v", "open aesgcm fault", err)
 
 		return record, storage.ErrUnknown
 	}
@@ -138,14 +138,14 @@ func (c *client) GetRecord(recordID string) (entity.Record, error) {
 	if record.Type == entity.TypeFile {
 		file, err := os.Create(record.Metadata)
 		if err != nil {
-			log.Infoln(err)
+			log.Warnf("%s :: %v", "create metadata-file fault", err)
 
 			return record, storage.ErrUnknown
 		}
 
 		_, err = file.Write(record.Data)
 		if err != nil {
-			log.Infoln(err)
+			log.Warnf("%s :: %v", "write in file fault", err)
 
 			return record, storage.ErrUnknown
 		}
